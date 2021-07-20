@@ -4,8 +4,8 @@ pipeline {
     stage('create xml file') {
       steps {
         script{
-          echo 'Inside my first stage'
-          echo 'Lets create an xml file'
+          sh 'echo 'Inside my first stage''
+          sh 'echo 'Lets create an xml file''
           sh '''pwd
           ls
           ls -lart'''
