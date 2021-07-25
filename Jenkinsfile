@@ -7,7 +7,6 @@ pipeline {
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
   stages {
-    stages {
         stage('Get NeoLoad CLI') {
           steps {
               sh "pip3 install -U --pre neoload"
