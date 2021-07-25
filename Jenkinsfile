@@ -6,120 +6,54 @@ pipeline {
     string(defaultValue: "defaultzone", description: 'Zone identifier', name: 'zone_id')
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
-  environment {
-    CLI_BRANCH="master"
-
-    MAX_SLA_FAILURE_PERCENT=25 // if more than x% of the time a per-run interval failed, stop test immediately
-  }
 
   stages {
-    stage ('Prep workspace') {
-      agent any
-      steps {
-        cleanWs()
-        script {
-          try { sh "docker rmi \$(docker images -a --filter=\"label=${env.CLI_BRANCH}\" --format=\"{{.ID}}\") --force" }
-          catch(error) {}
-        }
-        // write a custom Docker image for python + CLI with socket permissions
-        writeFile file: "Dockerfile", text: """
-FROM python:3.7-alpine
-# add the Jenkins user to container for file permissions and Docker socket chmod
-RUN apk add -q git shadow sudo
-RUN addgroup -g 993 -S jenkins && adduser --uid 997 -S jenkins -G jenkins && passwd -d jenkins
-RUN echo "jenkins ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/jenkins && chmod 0440 /etc/sudoers.d/jenkins
-# pre-install NeoLoad CLI
-WORKDIR /opt/neoload
-RUN git clone --single-branch --branch """+env.CLI_BRANCH+""" https://github.com/Neotys-Labs/neoload-cli.git
-RUN cd neoload-cli && python3 -m pip install -q .
-USER jenkins
-            """
-      }
-    }
     stage('Attach Worker') {
       agent {
-        dockerfile {
-          additionalBuildArgs "--rm --label \"${env.CLI_BRANCH}\""
-          args "-v /var/run/docker.sock:/var/run/docker.sock"
+        docker {
+          image 'python:3-alpine'
         }
       }
+      environment {
+        NEOLOAD="${WORKSPACE}/.local/bin/neoload"
+        HOME="${WORKSPACE}"
+      }
       stages {
-        stage('Prepare docker') {
+        stage('Get NeoLoad CLI') {
           steps {
-            sh 'sudo chmod 666 /var/run/docker.sock'
-            sh 'neoload --version'
+              sh "pip3 install -U --pre neoload"
+              sh "$NEOLOAD --version"
           }
         }
-        stage('Get NeoLoad Project') {
-          steps {
-            withEnv(["HOME=${env.WORKSPACE}"]) {
-              git url: 'https://github.com/Neotys-Labs/neoload-cli.git',
-                  branch: env.CLI_BRANCH
+        stage('Get NeoLoad project'){
+            steps {
+                sh 'rm -f *.yml; wget https://raw.githubusercontent.com/Neotys-Labs/neoload-cli/78a1366743b041088f357f0f702babfce5e55187/tests/neoload_projects/simpledemo.yml'
             }
-          }
         }
-        stage('Prepare Neoload test') {
+        stage('Prepare NeoLoad test') {
           steps {
-            withEnv(["HOME=${env.WORKSPACE}"]) {
-              sh """neoload \
+              sh """$NEOLOAD \
                      login --url ${params.api_url} ${params.token} \
-                     test-settings --zone ${params.zone_id} --lgs 2 --scenario fullTest createorpatch "example-Jenkins-SLAfail" \
-                     project --path tests/neoload_projects/example_1/ upload
+                     test-settings --zone ${params.zone_id} --scenario 'simpledemo' createorpatch "My Jenkins Test With CLI" \
+                     project --path simpledemo.yml upload
                 """
-              //sh 'neoload docker attach' // starts additional containers for load infrastructure on Docker host
-            }
           }
         }
         stage('Run Test') {
-          stages {
-            stage('Kick off test async') {
-              steps {
-                withEnv(["HOME=${env.WORKSPACE}"]) {
-                  sh """neoload run \
-                      --detached \
-                      --name "Jenkins pipeline performance regression test ${BUILD_NUMBER}" \
-                      --external-url '${BUILD_URL}' \
-                      --external-url-label 'Jenkins build ${BUILD_NUMBER}' \
-                      --description "Jenkins result description" \
-                      --web-vu 25 \
-                      --as-code default.yaml,slas/uat.yaml
-                     """
-                }
-              }
-            }
-            stage('Monitor test') {
-              parallel {
-                stage('Monitor SLAs') {
-                  steps {
-                    withEnv(["HOME=${env.WORKSPACE}"]) {
-                      sh "neoload fastfail --max-failure ${env.MAX_SLA_FAILURE_PERCENT} slas cur"
-                    }
-                  }
-                }
-                stage('Wait for test finale') {
-                  steps {
-                    withEnv(["HOME=${env.WORKSPACE}"]) {
-                      sh 'neoload wait cur'
-                    }
-                  }
-                }
-              } //end parallel
-            }
-          } // end stages
-          post {
-            always {
-              withEnv(["HOME=${env.WORKSPACE}"]) {
-                sh 'neoload --version'
-                //sh 'neoload docker --all detach'
-              }
-            }
+          steps {
+              sh """$NEOLOAD run \
+                  --name "Jenkins pipeline performance regression test ${BUILD_NUMBER}" \
+                  --external-url '${BUILD_URL}' \
+                  --external-url-label 'Jenkins build ${BUILD_NUMBER}' \
+                  --description "Jenkins result description" \
+                  --return-0 \
+                  --web-vu 50 \
+                 """
           }
         }
         stage('Generate Test Report') {
           steps {
-            withEnv(["HOME=${env.WORKSPACE}"]) {
-                sh "neoload test-results junitsla"
-            }
+             sh "$NEOLOAD test-results junitsla"
           }
           post {
               always {
