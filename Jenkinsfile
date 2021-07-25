@@ -6,18 +6,6 @@ pipeline {
     string(defaultValue: "defaultzone", description: 'Zone identifier', name: 'zone_id')
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
-
-  stages {
-    stage('Attach Worker') {
-      agent {
-        docker {
-          image 'python:3-alpine'
-        }
-      }
-      environment {
-        NEOLOAD="${WORKSPACE}/.local/bin/neoload"
-        HOME="${WORKSPACE}"
-      }
       stages {
         stage('Get NeoLoad CLI') {
           steps {
