@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-    label 'docker'
-  }
+  agent none
 
   parameters {
     string(defaultValue: "b2ac016f35d29e188f02956368e99dc62f2954d8e424e9c1", description: 'Neoload Web Token', name: 'token')
@@ -9,17 +7,7 @@ pipeline {
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
   stages {
-    stage('Attach Worker') {
-      agent {
-        docker {
-          image 'python:3-alpine'
-        }
-      }
-      environment {
-        NEOLOAD="${WORKSPACE}/.local/bin/neoload"
-        HOME="${WORKSPACE}"
-      }
-      stages {
+    stages {
         stage('Get NeoLoad CLI') {
           steps {
               sh "pip3 install -U --pre neoload"
