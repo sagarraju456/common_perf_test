@@ -13,6 +13,10 @@ pipeline {
               sh 'pip3 install -U --pre neoload --user'
               sh 'neoload --version'
           }
+          environment {
+            NEOLOAD="${WORKSPACE}/.local/bin/neoload"
+            HOME="${WORKSPACE}"
+          }
         }
         stage('Get NeoLoad project'){
             steps {
