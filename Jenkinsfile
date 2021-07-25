@@ -11,7 +11,7 @@ pipeline {
           steps {
 //               sh 'pip3 install --upgrade pip --user'
 //               sh 'pip3 install -U --pre neoload --user'
-              sh '$NEOLOAD --version'
+//               sh '$NEOLOAD --version'
           }
           environment {
             NEOLOAD="${WORKSPACE}/Library/Python/3.8/bin/neoload"
