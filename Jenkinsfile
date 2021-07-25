@@ -13,7 +13,7 @@ pipeline {
               sh 'pip3 install --upgrade pip --user'
               sh 'pip3 install -U --pre neoload --user'
               sh '$NEOLOAD --version'
-              echo ${BUILD_URL}
+              echo "${BUILD_URL}"
               
           }
           environment {
