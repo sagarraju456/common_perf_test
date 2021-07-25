@@ -11,7 +11,8 @@ pipeline {
           steps {
               sh """pip3 install --upgrade pip --user
                     pip3 install -U --pre neoload --user
-                    neoload --version"""
+                    neoload --version
+                 """
           }
         }
         stage('Get NeoLoad project'){
