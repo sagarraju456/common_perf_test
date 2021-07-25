@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-    label 'docker'
-  }
+  agent none
 
   parameters {
     string(defaultValue: "b2ac016f35d29e188f02956368e99dc62f2954d8e424e9c1", description: 'Neoload Web Token', name: 'token')
