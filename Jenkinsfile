@@ -7,19 +7,20 @@ pipeline {
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
   stages {
-//         stage('Get NeoLoad CLI') {
-//           steps {
-//               sh 'echo "Hello World"'
-//               sh 'pip3 install --upgrade pip --user'
-//               sh 'pip3 install -U --pre neoload --user'
-//               sh '$NEOLOAD --version'
+        stage('Get NeoLoad CLI') {
+          steps {
+              sh 'echo "Hello World"'
+              sh 'pip3 install --upgrade pip --user'
+              sh 'pip3 install -U --pre neoload --user'
+              sh '$NEOLOAD --version'
+              echo ${BUILD_URL}
               
-//           }
-//           environment {
-//             NEOLOAD="${WORKSPACE}/Library/Python/3.8/bin/neoload"
-//             HOME="${WORKSPACE}"
-//           }
-//         }
+          }
+          environment {
+            NEOLOAD="${WORKSPACE}/Library/Python/3.8/bin/neoload"
+            HOME="${WORKSPACE}"
+          }
+        }
         stage('Prepare NeoLoad test') {
           steps {
               sh """$NEOLOAD \
