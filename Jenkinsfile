@@ -9,9 +9,11 @@ pipeline {
   stages {
         stage('Get NeoLoad CLI') {
           steps {
+              sh 'echo "Hello World"'
 //               sh 'pip3 install --upgrade pip --user'
 //               sh 'pip3 install -U --pre neoload --user'
 //               sh '$NEOLOAD --version'
+              
           }
           environment {
             NEOLOAD="${WORKSPACE}/Library/Python/3.8/bin/neoload"
