@@ -11,7 +11,7 @@ pipeline {
           steps {
               sh """pip3 install --upgrade pip --user
                     pip3 install -U --pre neoload --user
-                    $NEOLOAD --version"""
+                    neoload --version"""
           }
           environment {
             PATH = "/Users/sa20099277/Library/Python/3.8/bin:$PATH"
