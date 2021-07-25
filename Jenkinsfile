@@ -13,9 +13,6 @@ pipeline {
                     pip3 install -U --pre neoload --user
                     neoload --version"""
           }
-          environment {
-            PATH = "/Users/sa20099277/Library/Python/3.8/bin:$PATH"
-          }
         }
         stage('Get NeoLoad project'){
             steps {
