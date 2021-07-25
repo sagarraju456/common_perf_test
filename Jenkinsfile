@@ -10,7 +10,7 @@ pipeline {
         stage('Get NeoLoad CLI') {
           steps {
               sh """pip3 install --upgrade pip --user
-                    pip3 install -U --pre neoload --user --no-warn-script-location
+                    pip3 install -U --pre neoload --user
                     $NEOLOAD --version"""
           }
         }
