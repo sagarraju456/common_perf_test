@@ -11,7 +11,6 @@ pipeline {
           steps {
               sh 'pip3 install --upgrade pip --user'
               sh 'pip3 install -U --pre neoload --user'
-              sh 'pip3 install wget --user'
               sh '$NEOLOAD --version'
           }
           environment {
