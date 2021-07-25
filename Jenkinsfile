@@ -6,6 +6,8 @@ pipeline {
     string(defaultValue: "defaultzone", description: 'Zone identifier', name: 'zone_id')
     string(defaultValue: "https://neoload-api.saas.neotys.com/", description: 'NeoLoad Web Api Url', name: 'api_url')
   }
+  
+  
       stages {
         stage('Get NeoLoad CLI') {
           steps {
@@ -52,4 +54,3 @@ pipeline {
       }
     }
   }
-}
