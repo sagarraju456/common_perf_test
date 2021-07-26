@@ -3,7 +3,15 @@ agent any
   stages {
     stage {
       steps {
-         echo "Hello World"
+          echo "Hello World"
+          publishHTML target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: '.',
+              reportFiles: 'CCSP.html',
+              reportName: 'RCov Report'
+            ]
       }
     }
   }
