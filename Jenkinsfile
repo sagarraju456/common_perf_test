@@ -1,17 +1,10 @@
 pipeline {
 agent any
   stages {
-    stage('Publish HTML') {
+    stage('Run Neoload') {
       steps {
           echo "Hello World"
-          publishHTML target: [
-              allowMissing: false,
-              alwaysLinkToLastBuild: false,
-              keepAll: true,
-              reportDir: '.',
-              reportFiles: 'CCSP.html',
-              reportName: 'RCov Report'
-            ]
+          neoloadRun executable: '/Users/sa20099277/.jenkins/workspace/Common_Performance_Testing/Library/Python/3.8/bin/neoload', project: '/Users/sa20099277/neoload_projects/sample/sample.nlp', testDescription: 'To check its working', scenario: 'scenario 1', trendGraphs: ['AvgResponseTime', 'ErrorRate']
       }
     }
   }
