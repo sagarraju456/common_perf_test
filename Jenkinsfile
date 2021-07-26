@@ -1,7 +1,7 @@
 pipeline {
 agent any
   stages {
-    stage {
+    stage('Publish HTML') {
       steps {
           echo "Hello World"
           publishHTML target: [
