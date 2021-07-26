@@ -4,7 +4,8 @@ agent any
     stage('Run Neoload') {
       steps {
         echo "Hello World"
-        neoloadRun project: [server: 'My External SVN', name: 'LoadTest100VuForProject', publishTestResult: false], scenario: 'Test for CD', trendGraphs: ['AvgResponseTime', 'ErrorRate']  
+        neoloadRun
+//         neoloadRun project: [server: 'My External SVN', name: 'LoadTest100VuForProject', publishTestResult: false], scenario: 'Test for CD', trendGraphs: ['AvgResponseTime', 'ErrorRate']  
 //           neoloadRun executable: '/Users/sa20099277/.jenkins/workspace/Common_Performance_Testing/Library/Python/3.8/bin/neoload', project: '/Users/sa20099277/neoload_projects/sample/sample.nlp', testDescription: 'To check its working', scenario: 'scenario 1', trendGraphs: ['AvgResponseTime', 'ErrorRate']
       }
     }
