@@ -4,7 +4,7 @@ agent any
     stage('Run Neoload') {
       steps {
         echo "Hello World"
-        publishHTML([reportName: 'HTML Test Report', allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'fastlane/test_output', reportFiles: 'CCSP.html'])
+        publishHTML([reportName: 'HTML Test Report', allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'CCSP.html'])
       }
     }
   }
