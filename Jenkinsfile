@@ -8,8 +8,7 @@ agent any
       allowMissing: false,
       alwaysLinkToLastBuild: false,
       keepAll: true,
-      reportDir: 'coverage',
-      reportFiles: 'index.html',
+      reportFiles: 'CCSP.html',
       reportName: "RCov Report"
     ])
       }
