@@ -4,7 +4,14 @@ agent any
     stage('Run Neoload') {
       steps {
         echo "Hello World"
-        neoloadRun executable: '/Applications/NeoLoad 7.10/bin/NeoLoadCmd', project: '/Users/sa20099277/neoload_projects/sample/sample.nlp', scenario: 'scenario 1', trendGraphs: ['AvgResponseTime', 'ErrorRate']
+        publishHTML (target: [
+      allowMissing: false,
+      alwaysLinkToLastBuild: false,
+      keepAll: true,
+      reportDir: 'coverage',
+      reportFiles: 'index.html',
+      reportName: "RCov Report"
+    ])
       }
     }
   }
